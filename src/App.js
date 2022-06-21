@@ -1,10 +1,10 @@
 import './App.css';
+import AdminPanel from "./components/AdminPanel"
+
 
 function App() {
   return (
-    <div className="App">
-      <h1>Admin UI</h1>
-    </div>
+    <AdminPanel/>
   );
 }
 
