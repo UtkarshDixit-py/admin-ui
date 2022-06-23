@@ -1,15 +1,15 @@
 
 
-export const setUsers=(userList)=>{
+export const setUsers = (usersList)=>{
     return{
         type : "SET_USERS",
-        payload : userList
+        payload : usersList
     }
 }
 
-// export const deleteUser = (id)=>{
-//     return{
-//         type : "DELETE_USER",
-//         payload : id
-//     }
-// }
+export const deleteUser = (userId)=>{
+    return{
+        type : "DELETE_USER",
+        payload : userId
+    }
+}

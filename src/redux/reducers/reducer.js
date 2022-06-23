@@ -12,12 +12,13 @@ export const userReducer = (state = initialState,action)=>{
                 List : action.payload
             }
 
-        // case "DELETE_USER" :
-        // return{
-        //     ...state,
-        //     List: []
-        // }
-         default:
+        case "DELETE_USER" :
+        return{
+                ...state,
+                List: state.List.filter((i) => i.id !== action.payload)
+            }
+
+        default:
             return state;
     }
 }

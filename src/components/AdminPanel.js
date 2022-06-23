@@ -1,7 +1,7 @@
 import React, { useEffect , useState } from 'react'
 import { Container } from '../assets/Style';
 import { useSelector , useDispatch } from 'react-redux';
-import { setUsers } from '../redux/actions/action';
+import { deleteUser, setUsers } from '../redux/actions/action';
 
 
 const AdminPanel = () => {
@@ -9,17 +9,20 @@ const AdminPanel = () => {
   const users = useSelector((state)=>state.userReducer.List);
   const dispatch = useDispatch();
   
-  useEffect(()=>{
-    fetch(`https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json`)
-    .then((response)=>response.json())
-    .then((actualData)=>dispatch(setUsers(actualData)));
-  },[]);
+    useEffect(()=>{
+      fetch(`https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json`)
+      .then((response)=>response.json())
+      .then((actualData)=>dispatch(setUsers(actualData)));
+    },[]);
 
+   const onDelete=(id)=>{
+      dispatch(deleteUser(id));
+    }
   
     if(users){
       return(
         <Container>
-          <table class="ui green table">
+          <table class="ui blue table">
             <thead>
                 <tr>
                 <th>check box</th>
@@ -31,15 +34,22 @@ const AdminPanel = () => {
             </thead>
             <tbody>
               {users.map(user=>{
+                const {name , role , email , id} = user;
                 return(
                       <tr>
                         <td>checkbox</td>
-                      <td>{user.name}</td>
-                      <td>{user.role}</td>
-                      <td>{user.email}</td>
+                      <td>{name}</td>
+                      <td>{role}</td>
+                      <td>{email}</td>
                       <td> 
-                        <i class="blue large edit icon"></i>
-                        <i class="red large trash icon"></i>
+                      <div class="ui icon buttons">
+                          <button class="ui blue basic button">
+                            <i class="edit icon blue "></i>
+                          </button>
+                          <button class="ui red basic button" onClick={()=>onDelete(id)}>
+                            <i class="trash icon red "></i>
+                          </button>
+                        </div>
                       </td>
                       </tr>
                     )
