@@ -1,5 +1,4 @@
 
-
 export const setUsers = (usersList)=>{
     return{
         type : "SET_USERS",
@@ -13,3 +12,25 @@ export const deleteUser = (userId)=>{
         payload : userId
     }
 }
+
+export const openModal = (modalStatus)=>{
+    return{
+        type: "OPEN_MODAL",
+        payload: modalStatus
+    }
+}
+
+export const closeModal = (modalStatus)=>{
+    return{
+        type: "CLOSE_MODAL",
+        payload: modalStatus
+    }
+}
+
+export const updateUser = (payload)=>{
+    return{
+        type: "UPDATE_USER",
+        payload: payload
+    }
+}
+
