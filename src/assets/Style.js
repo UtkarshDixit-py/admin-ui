@@ -22,7 +22,6 @@ position: fixed;
 display: flex;
 justify-content: center;
 align-items: center;
-
 `
 export const ModalContainer = styled.div`
 
@@ -35,7 +34,6 @@ box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 display: flex;
 flex-direction: column;
 padding: 25px;
-
 `
 
 
@@ -44,5 +42,4 @@ export const CloseModalBtn = styled.div`
 
 display: flex;
 justify-content: flex-end;
-
 `

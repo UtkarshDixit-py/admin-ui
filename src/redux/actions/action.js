@@ -34,3 +34,22 @@ export const updateUser = (payload)=>{
     }
 }
 
+export const deleteSeleted =(idArr)=>{
+        return{
+            type : "DELETE_SELECTED",
+            payload : idArr
+        }
+}
+
+export const searchUsersList =(payload)=>{
+    return{
+        type: "SEARCH_USERLIST",
+        payload
+    }
+}
+export const updateSearchInput=(payload)=>{
+    return{
+        type:"SEARCH_INPUT",
+        payload: payload
+    }
+}

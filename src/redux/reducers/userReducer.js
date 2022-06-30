@@ -1,7 +1,9 @@
 const initialState = {
     List:[],
     isModalOpen:false,
-    userToUpdateData:{}
+    userToUpdateData:{},
+    searchedUsersList: [],
+    inputForSearch:''
 
 }
 
@@ -12,13 +14,15 @@ export const userReducer = (state = initialState,action)=>{
         case "SET_USERS" :
             return{
                 ...state,
-                List : action.payload
+                List : action.payload,
+                searchedUsersList : action.payload
             }
 
         case "DELETE_USER" :
         return{
                 ...state,
-                List: state.List.filter((i) => i.id !== action.payload)
+                List: state.List.filter((i) => i.id !== action.payload),
+                searchedUsersList: state.List.filter((i) => i.id !== action.payload)
             }
         
         case "OPEN_MODAL" :
@@ -49,8 +53,31 @@ export const userReducer = (state = initialState,action)=>{
             return{
                 ...state,
                 List : updatedData,
+                searchedUsersList : updatedData
+            }
 
+        case "DELETE_SELECTED" :
+            let set = new Set();
+            for(let val of action.payload){
+                set.add(val);
+            }
+            let filteredList = state.List.filter((user)=>!set.has(user.id))
+            return{
+                ...state,
+                List : filteredList,
+                searchedUsersList : filteredList
+            };
 
+        case "SEARCH_USERLIST" :
+            return{
+                ...state,
+                searchedUsersList : action.payload
+            }
+
+        case "SEARCH_INPUT" :
+            return{
+                ...state,
+                inputForSearch : action.payload
             }
 
         default:

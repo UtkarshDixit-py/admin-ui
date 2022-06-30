@@ -39,23 +39,24 @@ const UpdateModal = () => {
             X
           </button>
         </CloseModalBtn>
-        <form class="ui form">
-        <div class="field">
+        <form className="ui form">
+        <div className="field">
           <label>Name</label>
           <input type="text" name="name" placeholder="Name" value={updateUserData.name} onChange={changeHandler}/>
         </div>
-        <div class="field">
+        <div className="field">
           <label>Role</label>
           <input type="text" name="role" placeholder="Role" value={updateUserData.role} onChange={changeHandler}/>
         </div>
-        <div class="field">
+        <div className="field">
           <label>Email</label>
           <input type="text" name="email" placeholder="Email" value={updateUserData.email} onChange={changeHandler}/>
         </div>
-        <button class="fluid ui button big blue " type="button" onClick={submitHandler}>Submit</button>
+        <button className="fluid ui button big blue " type="button" onClick={submitHandler}>Submit</button>
       </form>
       </ModalContainer>
     </ModalBackground>
+
   )
 }
 

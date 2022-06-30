@@ -1,14 +1,18 @@
-import React, { useEffect , useState } from 'react'
+import React, { useEffect , useState , useRef } from 'react'
 import { Container } from '../assets/Style';
 import { useSelector , useDispatch } from 'react-redux';
-import { deleteUser, setUsers , openModal } from '../redux/actions/action';
+import { deleteUser, setUsers , openModal ,deleteSeleted ,updateSearchInput , searchUsersList} from '../redux/actions/action';
 import UpdateModal from './UpdateModal';
+import Pagination from './Pagination';
 
 const AdminPanel = () => {
   const users = useSelector((state)=>state.userReducer.List);
   const isModalOpen = useSelector((state)=>state.userReducer.isModalOpen);
+  const searchedUsersList = useSelector((state)=>state.userReducer.searchedUsersList);
   const dispatch = useDispatch();
-  
+  const [checked ,setChecked] =  useState([]);
+  const [currentPage,setCurrentPage] = useState(1);
+  const [dataPerPage] = useState(10);
   
     useEffect(()=>{
       fetch(`https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json`)
@@ -16,22 +20,65 @@ const AdminPanel = () => {
       .then((actualData)=>dispatch(setUsers(actualData)));
     },[]);
 
-   const handleDelete=(id)=>{
+   var handleDelete=(id)=>{
       dispatch(deleteUser(id));
     }
     
-    const handleOpenModal=(user)=>{
+    var handleOpenModal=(user)=>{
       dispatch(openModal(user))
     }
-  
+    
+    var handleChecked =(id,ifChecked)=>{
+      if(ifChecked){
+        setChecked((prev)=>[...prev, id]);
+      } else{
+        setChecked((prev)=>prev.filter((elemId)=>elemId!==id));
+      }
+    };
+    
+    var handleDeleteSeleted =(idArr)=>{
+      dispatch(deleteSeleted(idArr));
+      setChecked([]);
+    }
+
+    var handleSearch=(event)=>{
+      // dispatch(updateSearchInput(event.target.value));
+      search(event.target.value);
 
 
-    if(users){
+    }
+    
+    const search =(input)=>{
+      const filteredUserList = users.filter((user)=>{
+        const {name , role , email , id} = user;
+        const fullDetail = name  + email + role;
+        if(fullDetail.toLowerCase().includes(input.toLowerCase())){
+          return true;
+        }
+        return false;
+      })
+      dispatch(searchUsersList(filteredUserList))
+    }
+
+    const paginate = (pageNo) => setCurrentPage(pageNo)
+
+    const LastDataObjectIndex = currentPage*dataPerPage
+    const FirstDataObjectIndex = LastDataObjectIndex - dataPerPage
+    const currentData = searchedUsersList.slice(FirstDataObjectIndex,LastDataObjectIndex)
+
+    if(searchedUsersList){ 
       return(
         <>
         {isModalOpen===true? <UpdateModal/>  : null} 
         <Container>
-          <table class="ui blue table">
+        <div className="ui category search">
+        <div className="ui icon input">
+        <input  className="prompt" type="text" placeholder="Search Here" onChange={handleSearch} />
+        <i className="search icon"></i>
+        </div>
+        <div className="results"></div>
+        </div>
+          <table className="ui blue table">
             <thead>
                 <tr>
                 <th>&nbsp;</th>
@@ -42,13 +89,14 @@ const AdminPanel = () => {
                 </tr>
             </thead>
             <tbody>
-              {users.map(user=>{
+            {
+              currentData.map(user=>{
                 const {name , role , email , id} = user;
                 return(
                       <tr key={id}>
                       <td>
-                        <div class="ui checkbox">
-                          <input type="checkbox" name="example"/>
+                        <div className="ui checkbox">
+                          <input type="checkbox" name="selected"  onChange={(e)=>handleChecked(id,e.target.checked)}/>
                           <label></label>
                         </div>
                       </td>
@@ -56,12 +104,12 @@ const AdminPanel = () => {
                       <td>{role}</td>
                       <td>{email}</td>
                       <td> 
-                      <div class="ui icon buttons">
-                          <button class="ui blue basic button" onClick={()=>handleOpenModal(user)}>
-                            <i class="edit icon blue "></i>
+                      <div className="ui icon buttons">
+                          <button className="ui blue basic button" onClick={()=>handleOpenModal(user)}>
+                            <i className="edit icon blue "></i>
                           </button>
-                          <button class="ui red basic button" onClick={()=>handleDelete(id)}>
-                            <i class="trash icon red "></i>
+                          <button className="ui red basic button" onClick={()=>handleDelete(id)}>
+                            <i className="trash icon red "></i>
                           </button>
                         </div>
                       </td>
@@ -70,6 +118,8 @@ const AdminPanel = () => {
               })}
             </tbody>
           </table>
+          <button className="ui red basic left floated button" onClick={()=>handleDeleteSeleted(checked)}>Delete Selected({checked.length})</button>
+          <Pagination  currentPage={currentPage} dataPerPage={dataPerPage} totalData={searchedUsersList.length} paginate={paginate} />
         </Container>
         </>
       )
