@@ -13,6 +13,9 @@ const AdminPanel = () => {
   const [checked ,setChecked] =  useState([]);
   const [currentPage,setCurrentPage] = useState(1);
   const [dataPerPage] = useState(10);
+  const [checkedAll , setCheckedAll] = useState(false);
+  const [deleteAll, setDeleteAll] = useState({first:0 , last :10})
+
   
     useEffect(()=>{
       fetch(`https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json`)
@@ -66,6 +69,26 @@ const AdminPanel = () => {
     const FirstDataObjectIndex = LastDataObjectIndex - dataPerPage
     const currentData = searchedUsersList.slice(FirstDataObjectIndex,LastDataObjectIndex)
 
+    const handleSelectAll=(check)=>{
+      let first = deleteAll.first;
+      let last = deleteAll.last;
+
+      if(check===true){
+        setCheckedAll(true)
+        let items = [...checked]
+        for(let i = first ;i<=last ; i++){
+          items.push(i.toString())
+      }
+      setChecked(items)
+      let nfirst = first+10
+      let nlast = last+10
+      setDeleteAll({first : nfirst,last:nlast})
+        
+      }else{
+        setCheckedAll(false)
+      }
+    }
+
     if(searchedUsersList){ 
       return(
         <>
@@ -73,7 +96,7 @@ const AdminPanel = () => {
         <Container>
         <div className="ui category search">
         <div className="ui icon input">
-        <input  className="prompt" type="text" placeholder="Search Here" onChange={handleSearch} />
+        <input className="prompt" type="text" placeholder="Search Here" onChange={handleSearch} />
         <i className="search icon"></i>
         </div>
         <div className="results"></div>
@@ -81,7 +104,12 @@ const AdminPanel = () => {
           <table className="ui blue table">
             <thead>
                 <tr>
-                <th>&nbsp;</th>
+                <th>
+                  <div className="ui checkbox">
+                          <input type="checkbox" name="selected"  onChange={(e)=>handleSelectAll(e.target.checked)}/>
+                          <label></label>
+                  </div>
+                </th>
                 <th>Name</th>
                 <th>Role</th>
                 <th>Email</th>
